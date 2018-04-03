@@ -14,32 +14,12 @@ interface State {
     todos: Array<Todo>;
 }
 
-const initialState: State = {
-    visibilityFilter: VisibilityFilters.SHOW_ALL,
-    todos: []
-};
-
-function todoApp(state = initialState, action: Action): State{
-    switch(action.type){
-        case ActionTypes.SET_VISIBILITY_FILTER:
-            // return Object.assign({}, state, {
-            //     visibilityFilter: action.filter
-            // });
-            return { ...state, visibilityFilter: action.filter };
-        case ActionTypes.ADD_TODO:
-            return {
-                ...state,
-                todos: todos(state.todos, action)
-            };
-        case ActionTypes.TOGGLE_TODO:
-            return {
-                ...state,
-                todos: todos(state.todos, action)
-            };
-            
-        default:
-            return state;
-    }
+// main filter
+function todoApp(state: State, action: Action): State{
+    return {
+        visibilityFilter: visibilityFilter(state.visibilityFilter, action),
+        todos: todos(state.todos, action)
+    };
 }
 
 /**
@@ -64,6 +44,16 @@ function todos(state: Array<Todo> = [], action: Action): Array<Todo>{
                 }
                 return todo;
             });
+        default:
+            return state;
+    }
+}
+
+// visibility filter
+function visibilityFilter(state = VisibilityFilters.SHOW_ALL, action: Action): VisibilityFilters{
+    switch(action.type){
+        case ActionTypes.SET_VISIBILITY_FILTER:
+            return action.filter;
         default:
             return state;
     }
