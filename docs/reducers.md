@@ -235,7 +235,31 @@ function todoApp(state = initialState, action) {
 }
 ```
 
-#
+注意 `todos` 也接收 `state` - 但却是个数组！现在 `todoApp` 只给他片段 state 管理，`todos` 知道如何更新这片段 state. 这叫编辑 reducer (reducer composition), 这是构建 Redux 应用的重要模式。
+
+让我们探索下 reducer 编辑。我们可以抽取一个管理 `visibilityFilter` 的 reducer 吗？可以的。
+
+在 import 语句之后，用 ES6 解构语法声明 `SHOW_ALL`:
+
+```js
+const { SHOW_ALL } = VisibilityFilters;
+```
+
+然后：
+
+```js
+function visibilityFilter(state = SHOW_ALL, action){
+  switch(action.type){
+    case SET_VISIBILITY_FILTER:
+      return action.filter;
+    default:
+      return false;
+  }
+}
+```
+
+现在我们可以重写主 reducer, 调用其他 reducers 管理部分 state，然后将 state 结合成一个对象。他不需要知道完整的初始 state.
+# 
 
 注意区分 ui state, state, store
 
