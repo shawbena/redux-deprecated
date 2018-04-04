@@ -1,53 +1,47 @@
+import { AnyAction, combineReducers } from 'redux';
 import { 
-    Action,
     ActionTypes,
     VisibilityFilters,
 } from './actions';
 
-interface Todo{
+export interface Todo{
     text: string;
     completed: boolean;
 }
 
-interface State {
+export interface TodoState {
     visibilityFilter: VisibilityFilters;
     todos: Array<Todo>;
 }
 
-const initialState: State = {
-    visibilityFilter: VisibilityFilters.SHOW_ALL,
-    todos: []
-};
+// main reducer
+// function todoApp(state: TodoState, action: AnyAction): TodoState{
+//     return{
+//         visibilityFilter: visibilityFilter(state.visibilityFilter, action),
+//         todos: todos(state.todos, action)
+//     };
+// }
 
-function todoApp(state = initialState, action: Action): State{
-    switch(action.type){
-        case ActionTypes.SET_VISIBILITY_FILTER:
-            // return Object.assign({}, state, {
-            //     visibilityFilter: action.filter
-            // });
-            return { ...state, visibilityFilter: action.filter };
-        case ActionTypes.ADD_TODO:
-            return {
-                ...state,
-                todos: todos(state.todos, action)
-            };
-        case ActionTypes.TOGGLE_TODO:
-            return {
-                ...state,
-                todos: todos(state.todos, action)
-            };
-            
-        default:
-            return state;
+const todoApp = combineReducers<TodoState>({
+    visibilityFilter,
+    todos
+});
+
+
+function visibilityFilter(state = VisibilityFilters.SHOW_ALL, action: AnyAction) {
+    switch (action.type) {
+      case ActionTypes.SET_VISIBILITY_FILTER:
+        return action.filter
+      default:
+        return state
     }
-}
-
+  }
 /**
  * multiple todos, not state. add todo, toggle todo
  * @param state todos
  * @param action 
  */
-function todos(state: Array<Todo> = [], action: Action): Array<Todo>{
+function todos(state: Array<Todo> = [], action: AnyAction): Array<Todo>{
     switch(action.type){
         case ActionTypes.ADD_TODO:
             return [
@@ -68,3 +62,5 @@ function todos(state: Array<Todo> = [], action: Action): Array<Todo>{
             return state;
     }
 }
+
+export default todoApp;

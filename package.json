@@ -1,0 +1,33 @@
+{
+  "name": "react-redux",
+  "version": "1.0.0",
+  "description": "Redux 是一个用于 JavaScript 应用的可预测的状态容器。",
+  "main": "",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shawbena/redux.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shawbena/redux/issues"
+  },
+  "homepage": "https://github.com/shawbena/redux#readme",
+  "dependencies": {
+    "@types/redux": "^3.6.0",
+    "redux": "^3.7.2"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^4.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "typescript": "^2.8.1",
+    "webpack": "^3.10.0"
+  }
+}
