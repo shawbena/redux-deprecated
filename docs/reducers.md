@@ -258,7 +258,52 @@ function visibilityFilter(state = SHOW_ALL, action){
 }
 ```
 
-现在我们可以重写主 reducer, 调用其他 reducers 管理部分 state，然后将 state 结合成一个对象。他不需要知道完整的初始 state.
+现在我们可以重写主 reducer, 调用其他 reducers 管理部分 state，然后将 state 结合成一个对象。他不需要知道完整的初始 state. 只要在首次给 `undefined` 时子 reducer 返回初始他们的 state 就可以。
+
+```js
+function todos(state = [], action) {
+  switch (action.type) {
+    case ADD_TODO:
+      return [
+        ...state,
+        {
+          text: action.text,
+          completed: false
+        }
+      ]
+    case TOGGLE_TODO:
+      return state.map((todo, index) => {
+        if (index === action.index) {
+          return Object.assign({}, todo, {
+            completed: !todo.completed
+          })
+        }
+        return todo
+      })
+    default:
+      return state
+  }
+}
+ 
+function visibilityFilter(state = SHOW_ALL, action) {
+  switch (action.type) {
+    case SET_VISIBILITY_FILTER:
+      return action.filter
+    default:
+      return state
+  }
+}
+ 
+function todoApp(state = {}, action) {
+  return {
+    visibilityFilter: visibilityFilter(state.visibilityFilter, action),
+    todos: todos(state.todos, action)
+  }
+}
+```
+
+
+注意，每个 reducers 在管理着全局 state 中属于自己的部分。每个 reducer 的 `state` 参数都不一样，对应着各自管理的 state.
 # 
 
 注意区分 ui state, state, store
