@@ -11,6 +11,6 @@
 
 export enum VisibilityFilters {
     SHOW_ALL,
-    SHOW_COMPUTED,
+    SHOW_COMPLETED,
     SHOW_ACTIVE
 }

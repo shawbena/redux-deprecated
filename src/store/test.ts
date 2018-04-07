@@ -18,6 +18,6 @@ store.dispatch(addTodo('Learn about store'));
 
 store.dispatch(toggleTodo(0));
 store.dispatch(toggleTodo(1));
-store.dispatch(setVisibiltyFilter(VisibilityFilters.SHOW_COMPUTED));
+store.dispatch(setVisibiltyFilter(VisibilityFilters.SHOW_COMPLETED));
 
 unsubscribe();

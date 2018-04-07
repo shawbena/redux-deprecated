@@ -36,11 +36,22 @@ import { ADD_TODO, REMOVE_TODO } from '../actionTypes';
 }
 ```
 
-#### Action Creators
+尽可能每个 action 传递一点数据是个不错的主意。例如，传递 `index` 比传递整个 todo 对象要好些。
 
-__Action creators__ 准确地说是创建 actions 的函数。使用 action 还是 action creator 视性形而定。
+最后，我们再添加一个 action 类型用于改变当前可见的 todos.
 
-在 Redux 中，action creators 只是仅回一个 action:
+```js
+{
+    type: SET_VISIBILITY_FILTER,
+    filter: SHOW_COMPLETED
+}
+```
+
+## Action Creators
+
+__Action creators__ 准确地说是创建 actions 的函数。很容易混淆 "action" 和 "action creator" 这两个术语，使用 action 还是 action creator 视性形而定。
+
+在 Redux 中，action creators 只是仅仅返回一个 action:
 
 ```js
 function addTodo(text){
@@ -65,6 +76,13 @@ function addTodoWithDispatch(text) {
 
 在 Redux 中不是这样。// 这样写出的代码不清晰。
 
+如果要发起 dispatch, 要把结果传递给 `dispatch()` 函数：
+
+```js
+dispatch(addTodo(text));
+dispatch(completeTodo(index));
+```
+
 你也可以创建 __bound action creator__ 自动 dispatch.
 
 ```js
@@ -81,8 +99,7 @@ boundCompleteTodo(index);
 
 `dispatch()` 函数可以通过 store 直接调用 `store.dispatch()`, 但你很有可能用redux 的辅助方法如 `connect()`. 你可以使用 [bindActionCreators()]() 给 `dispatch()` 函数自动绑定多个 action creators.
 
-Action creators 也可以是异步的并且有副作用。你可以在高级教程中读些关于 [async actions]() 的内容，学习下怎样处理 AJAX 请求及编辑 action creators 为异步控制流。在完成基本教程前不要跳到异步 action, 初级教程涉及到了很多重要的概念，在学高级教程及异步 actions 时这些都用得到
-。
+Action creators 也可以是异步的并且有副作用。你可以在高级教程中读些关于 [async actions]() 的内容，学习下怎样处理 AJAX 请求及编辑 action creators 为异步控制流。在完成基本教程前不要跳到异步 action, 初级教程涉及到了很多重要的概念，在学高级教程及异步 actions 时这些都用得到。
 
 __action.js__
 
@@ -101,7 +118,7 @@ export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER';
 
 export const VisibilityFilters = {
     SHOW_ALL: 'SHOW_ALL',
-    SHOW_COMPLETED: 'SHOW_COMPUTED',
+    SHOW_COMPLETED: 'SHOW_COMPLETED',
     SHOW_ACTIVE: 'SHOW_ACTIVE'
 };
 

@@ -2,17 +2,9 @@ import { AnyAction, combineReducers } from 'redux';
 import { 
     ActionTypes,
     VisibilityFilters,
-} from './actions';
+} from '../actions';
 
-export interface Todo{
-    text: string;
-    completed: boolean;
-}
-
-export interface TodoState {
-    visibilityFilter: VisibilityFilters;
-    todos: Array<Todo>;
-}
+import { TodoItem, State } from '../state';
 
 // main reducer
 // function todoApp(state: TodoState, action: AnyAction): TodoState{
@@ -22,7 +14,7 @@ export interface TodoState {
 //     };
 // }
 
-const todoApp = combineReducers<TodoState>({
+const todoApp = combineReducers<State>({
     visibilityFilter,
     todos
 });
@@ -41,12 +33,13 @@ function visibilityFilter(state = VisibilityFilters.SHOW_ALL, action: AnyAction)
  * @param state todos
  * @param action 
  */
-function todos(state: Array<Todo> = [], action: AnyAction): Array<Todo>{
+function todos(state: Array<TodoItem> = [], action: AnyAction): Array<TodoItem>{
     switch(action.type){
         case ActionTypes.ADD_TODO:
             return [
                 ...state,
                 {
+                    id: action.id,
                     text: action.text,
                     completed: false
                 }
@@ -54,7 +47,7 @@ function todos(state: Array<Todo> = [], action: AnyAction): Array<Todo>{
         case ActionTypes.TOGGLE_TODO:
             return state.map((todo, index) => {
                 if(index === action.index){
-                    return { text: todo.text, completed: !todo.completed };
+                    return { ...todo, text: todo.text, completed: !todo.completed };
                 }
                 return todo;
             });

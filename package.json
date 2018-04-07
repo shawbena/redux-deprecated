@@ -1,5 +1,5 @@
 {
-  "name": "react-redux",
+  "name": "learning-redux",
   "version": "1.0.0",
   "description": "Redux 是一个用于 JavaScript 应用的可预测的状态容器。",
   "main": "",
@@ -21,7 +21,13 @@
   },
   "homepage": "https://github.com/shawbena/redux#readme",
   "dependencies": {
-    "@types/redux": "^3.6.0",
+    "@types/prop-types": "^15.5.2",
+    "@types/react": "^16.3.5",
+    "@types/react-dom": "^16.0.4",
+    "@types/react-redux": "^5.0.15",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
+    "react-redux": "^5.0.7",
     "redux": "^3.7.2"
   },
   "devDependencies": {

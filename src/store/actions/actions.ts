@@ -1,3 +1,6 @@
+/**
+ * Actions for dispatch.
+ */
 import { AnyAction } from 'redux';
 import { 
     ActionTypes,
