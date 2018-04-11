@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "build": "webpack"
+    "build": "rm -rvf build dist && webpack"
   },
   "repository": {
     "type": "git",
