@@ -362,17 +362,108 @@ export default connect(mapStateToPropsFactory, mapDispatchToPropsFactory)(TodoAp
 
 - `selectorFactory(dispatch, factoryOptions): selector(state, ownProps): props` (Function): 初始化一个 sector 函数 (在每个实例的构造函数中). 每当 connector 组件需要计算新属性就会调用这个 selector 函数。 `selector` 的期望结果是一个单纯的对象，这个对象将会作为属性传递给包裹的组件。如果连续调用 `selector` 返回与上次调用返回的是同一对象 (`===`)，组件将不会重新渲染。`selector` 的职责是适时返回先前的对象。
 
-- [`connectOptions`] (Object) 如果指定的话，进一步自义 connector 的行为
+- [`connectOptions (factoryOptions)`] (Object) 如果指定的话，进一步自义 connector 的行为
 
  - [`getDisplayName`] (Function): 计算 connector 组件相对包裹的组件的 displayName 属性。通常被包裹组件覆盖。默认值： `name => 'ConnectedAdvanced('+name+')'`
 
  - [`methodName`] (String): 在错误消息中显示。常被包裹函数覆盖。默认值： `connectAdvanced`
  
- - [`renderGroupProp`] (String)
+ - [`renderGroupProp`] (String): 如果定义了，一个有此值的属性将被添加到传递给组件的 props 中。其值将会是组件已经被渲染的次数，追踪不必要的重新渲染时会很有用。默认值：`undefined`
+
+ - [`shouldHandleStateChanges`] (Boolean): 控制 connector 组件是否订阅 redux store state 变化。如果设为 false, 只在 `componentWillReceiveProps` 时接重新渲染。默认值：`true`
+
+ - [`storeKey`] (String): 得到 store 的 props/context 键。如果你处于不建议的多 store 的情形时才建议你使用这个。默认值：`store`
+ 
+ - [`withRef`] (Boolean): 如果为 true, 存储一个包裹的组件实例的 ref，你可以通过 `getWrappedInstance()` 方法获取到。默认值：`false`
+
+ - 其他传给 `connectOptions` 的额外选项将传给 `selectorFactory` 的 `factoryOptions` 参数。
+
 ### Returns
+
+一个高阶的 React 组件类，将来自 store state 的数据构建成 props 传递给包裹的组件。高阶组件是一个函数，他接收一个组件作为参数并返回一个新的组件。
+
+__Static Properties__
+
+- `WrappedComponent` (Component): 传递给 `connectAdvanced(...)(Component)` 的原始的组件类
+
+__Static Methods__
+
+原始组件的所有静态方法都被保留。
+
+__Instance Methods__
+
+`getWrappedInstance(): ReactComponent`
+
+返回包裹的组件实例。只当指定了 `{ withRef: true }` 时可用。
 
 ### Remarks
 
+- 由于 `connectAdvanced` 返回一个高阶组件，他需要被调用两次。第一次传递上面描述的参数，第二次传递给组件：`connectAdvanced(selectorFactory)(MyComponent)`
+
+- `connectAdvanced` 不修改传递的 React 组件。他返回一个新的，connected 的组件给你用。
+
 ### Examples
 
+__Inject `todos` of a specific user depending on props, and inject `props.userId` into the action__
+
+```js
+import * as actionCreators from './actionCreators';
+import { bindActionCreators } from 'redux';
+
+function selectorFactory(dispatch){
+    let ownProps = {};
+    let result = {};
+    const actions = bindActionCreators(actionCreators, dispatch);
+    const addTodo = (text) => actions.addTodo(ownProps.userId, text);
+    return (nextState, nextOwnProps) => {
+        const todos = nextState.todos[nextownProps.userId];
+        const nextResult = { ...nextOwnProps, todos, addTodo };
+        ownProps = nextOwnProps;
+
+        if(!shallowEqual(result, nextResult)){
+            result = nextResult;
+        }
+
+        return result;
+    };
+}
+
+export default connectAdvanced(selectorFactory)(TodoApp);
+```
+
 ## `createProvider([storeKey])`
+
+当创建一个新的 `<Provider>` 将根据传递的 conext 的键设置 Redux Store. 只有处理不建议的多 store 的情形时你才可能需要这样做。你也需要给 [connect]() 的参数 `options` 传递同样的 `storeKey`.
+
+### Arguments
+
+- [`storeKey`] (String): 用于设置 store 的 context 的键。默认值：`store`
+
+### Examples
+
+在创建多个 store 前，请先读下这篇 FAQ: [Can or should I create multiple stores?](http://redux.js.org/docs/faq/StoreSetup.html#can-or-should-i-create-multiple-stores-can-i-import-my-store-directly-and-use-it-in-components-myself)
+
+```js
+import { connect, createProvider } from 'react-redux';
+const STORE_KEY = 'componentStore';
+
+function connectExtended(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps,
+    option = {}
+){
+    opitons.storeKey = STORE_KEY;
+    return connect(
+        mapStateToProps,
+        mapDispatchToProps,
+        mergeProps,
+        options
+    );
+}
+
+export { connectExtended as connect };
+```
+
+现在你可以引入 `Provider` 及 `connect` 并使用他们。
+

@@ -16,4 +16,3 @@ render(
     </Provider>,
     div
 )
-${CURRENT_DAY_NAME}
